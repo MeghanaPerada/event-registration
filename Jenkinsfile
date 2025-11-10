@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git 'https://github.com/MeghanaPerada/event-registration.git'
+                git branch: 'main', url: 'https://github.com/MeghanaPerada/event-registration.git'
             }
         }
 
@@ -29,10 +29,11 @@ pipeline {
 
     post {
         success {
-            echo 'Build completed successfully!'
+            echo '✅ Build completed successfully!'
         }
         failure {
-            echo 'Build failed!'
+            echo '❌ Build failed!'
         }
     }
 }
+
