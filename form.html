@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Login & Registration</title>
+  <meta name="description" content="Simple login and registration page (demo)" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#f3f6fb; --card:#fff; --accent:#2563eb; --muted:#6b7280; --danger:#ef4444; --radius:12px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; min-height:100vh; display:grid; place-items:center;
+      font-family:Inter,system-ui,Arial; background:linear-gradient(180deg,var(--bg),#eef6ff);
+      padding:24px;
+    }
+    .wrap{width:100%;max-width:420px}
+    .card{background:var(--card);border-radius:var(--radius);padding:20px; box-shadow:0 10px 30px rgba(15,23,42,0.06)}
+    h2{margin:0 0 8px 0}
+    p.lead{margin:0 0 18px;color:var(--muted);font-size:.95rem}
+    .tabs{display:flex;gap:8px;margin-bottom:12px}
+    .tab{flex:1;padding:8px;border-radius:10px;text-align:center;cursor:pointer;font-weight:600;border:1px solid transparent}
+    .tab.active{background:linear-gradient(90deg,var(--accent),#7c3aed);color:#fff;border-color:rgba(0,0,0,0.04)}
+    form{display:grid;gap:10px}
+    label{font-size:.9rem;font-weight:600}
+    input{width:100%;padding:.65rem .75rem;border-radius:8px;border:1px solid #e6eef8}
+    input:focus{outline:none;box-shadow:0 8px 20px rgba(37,99,235,0.06);border-color:var(--accent)}
+    .row{display:flex;gap:8px}
+    .btn{background:linear-gradient(90deg,var(--accent),#7c3aed);color:white;padding:.65rem 0;border-radius:8px;border:0;font-weight:700;cursor:pointer}
+    .btn.ghost{background:transparent;color:var(--accent);border:1px solid rgba(37,99,235,0.12)}
+    .hint{font-size:.85rem;color:var(--muted)}
+    .error{color:var(--danger);font-size:.9rem;height:1.1rem}
+    .success{color:green;font-size:.95rem}
+    .small{font-size:.85rem;color:var(--muted);text-align:center;margin-top:10px}
+    .actions{display:flex;justify-content:space-between;align-items:center}
+    .pw-toggle{background:none;border:0;color:var(--muted);cursor:pointer;font-weight:600}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card" role="region" aria-label="Auth card">
+      <div class="tabs" role="tablist">
+        <div id="tab-login" class="tab active" role="tab">Login</div>
+        <div id="tab-register" class="tab" role="tab">Register</div>
+      </div>
+
+      <!-- LOGIN -->
+      <form id="loginForm" aria-hidden="false" autocomplete="on">
+        <h2>Welcome back</h2>
+        <p class="lead">Sign in to your account</p>
+
+        <div>
+          <label for="loginEmail">Email</label>
+          <input id="loginEmail" type="email" required placeholder="you@example.com">
+        </div>
+
+        <div>
+          <label for="loginPassword">Password</label>
+          <div style="display:flex;gap:8px">
+            <input id="loginPassword" type="password" required placeholder="Your password">
+            <button type="button" class="pw-toggle" data-target="loginPassword" aria-label="Toggle password">Show</button>
+          </div>
+        </div>
+
+        <div class="error" id="loginError" aria-live="polite"></div>
+
+        <div class="actions" style="margin-top:6px">
+          <button type="submit" class="btn">Login</button>
+          <button type="button" id="logoutBtn" class="btn ghost" style="display:none">Logout</button>
+        </div>
+
+        <div id="loginMsg" class="success" aria-live="polite"></div>
+      </form>
+
+      <!-- REGISTER -->
+      <form id="regForm" style="display:none" aria-hidden="true" autocomplete="on">
+        <h2>Create account</h2>
+        <p class="lead">Register quickly — demo only</p>
+
+        <div>
+          <label for="regName">Full name</label>
+          <input id="regName" type="text" required placeholder="Your name">
+        </div>
+
+        <div>
+          <label for="regEmail">Email</label>
+          <input id="regEmail" type="email" required placeholder="you@example.com">
+        </div>
+
+        <div>
+          <label for="regPassword">Password</label>
+          <div style="display:flex;gap:8px">
+            <input id="regPassword" type="password" required minlength="6" placeholder="At least 6 characters">
+            <button type="button" class="pw-toggle" data-target="regPassword" aria-label="Toggle password">Show</button>
+          </div>
+          <div class="hint">Use a strong password. (This demo stores it in localStorage.)</div>
+        </div>
+
+        <div class="error" id="regError" aria-live="polite"></div>
+
+        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:6px">
+          <button type="reset" class="btn ghost">Reset</button>
+          <button type="submit" class="btn">Register</button>
+        </div>
+
+        <div id="regMsg" class="success" aria-live="polite"></div>
+      </form>
+
+      <div class="small">This is a simple client-side demo. For production, use a backend and never store raw passwords in localStorage.</div>
+    </div>
+  </div>
+
+  <script>
+    // Minimal, easy-to-read JS
+    (function(){
+      const tabLogin = document.getElementById('tab-login');
+      const tabRegister = document.getElementById('tab-register');
+      const loginForm = document.getElementById('loginForm');
+      const regForm = document.getElementById('regForm');
+
+      function showLogin(){ tabLogin.classList.add('active'); tabRegister.classList.remove('active'); loginForm.style.display='block'; regForm.style.display='none'; loginForm.setAttribute('aria-hidden','false'); regForm.setAttribute('aria-hidden','true'); }
+      function showRegister(){ tabRegister.classList.add('active'); tabLogin.classList.remove('active'); regForm.style.display='block'; loginForm.style.display='none'; regForm.setAttribute('aria-hidden','false'); loginForm.setAttribute('aria-hidden','true'); }
+
+      tabLogin.addEventListener('click', showLogin);
+      tabRegister.addEventListener('click', showRegister);
+
+      // Password show/hide
+      document.querySelectorAll('.pw-toggle').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          const tgt = document.getElementById(btn.dataset.target);
+          if(tgt.type === 'password'){ tgt.type = 'text'; btn.textContent = 'Hide'; }
+          else { tgt.type = 'password'; btn.textContent = 'Show'; }
+        });
+      });
+
+      // Simple user store in localStorage (for demo)
+      const USERS_KEY = 'demo_users_v1'; // key in localStorage
+
+      function loadUsers(){ try { return JSON.parse(localStorage.getItem(USERS_KEY) || '{}'); } catch(e){ return {}; } }
+      function saveUsers(obj){ localStorage.setItem(USERS_KEY, JSON.stringify(obj)); }
+
+      // Register
+      regForm.addEventListener('submit', (e)=>{
+        e.preventDefault();
+        const name = document.getElementById('regName').value.trim();
+        const email = document.getElementById('regEmail').value.trim().toLowerCase();
+        const pw = document.getElementById('regPassword').value;
+
+        const errEl = document.getElementById('regError');
+        const msgEl = document.getElementById('regMsg');
+        errEl.textContent = ''; msgEl.textContent = '';
+
+        if(!name || !email || pw.length < 6){ errEl.textContent = 'Please fill valid details (password ≥6 chars).'; return; }
+
+        const users = loadUsers();
+        if(users[email]){ errEl.textContent = 'An account with this email already exists.'; return; }
+
+        // Demo: store password as plain text (NOT recommended). Replace with hash on backend.
+        users[email] = { name, email, password: pw, createdAt: new Date().toISOString() };
+        saveUsers(users);
+
+        msgEl.textContent = 'Account created. You can now login.';
+        regForm.reset();
+        setTimeout(()=> showLogin(), 900);
+      });
+
+      // Login
+      loginForm.addEventListener('submit', (e)=>{
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+        const pw = document.getElementById('loginPassword').value;
+
+        const errEl = document.getElementById('loginError');
+        const msgEl = document.getElementById('loginMsg');
+        errEl.textContent = ''; msgEl.textContent = '';
+
+        if(!email || !pw){ errEl.textContent = 'Enter email and password.'; return; }
+
+        const users = loadUsers();
+        const user = users[email];
+        if(!user || user.password !== pw){ errEl.textContent = 'Invalid email or password.'; return; }
+
+        // Successful login (demo)
+        msgEl.textContent = 'Logged in as ' + user.name + '.';
+        // show logout button
+        document.getElementById('logoutBtn').style.display = 'inline-block';
+      });
+
+      // Logout (demo only)
+      document.getElementById('logoutBtn').addEventListener('click', ()=>{
+        document.getElementById('loginMsg').textContent = 'Logged out.';
+        document.getElementById('logoutBtn').style.display = 'none';
+      });
+
+      // quick: prefill sample user (optional)
+      (function seed(){
+        const users = loadUsers();
+        if(!users['demo@example.com']){
+          users['demo@example.com'] = { name:'Demo User', email:'demo@example.com', password:'demo123', createdAt: new Date().toISOString() };
+          saveUsers(users);
+        }
+      })();
+    })();
+  </script>
+</body>
+</html>
